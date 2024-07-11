@@ -102,7 +102,7 @@ odf = 1 # Outlier Delta Factor: multiplied by dc_ gives dm_, the side of the box
 print("Running CLUE with ", dc, rhoc, odf)
 cutoff.sort_index(inplace=True)
 
-print(cutoff)
+print("Number of points in dataframe:", len(cutoff))
 
 clust = clue.clusterer(dc, rhoc, odf)
 clust.read_data(cutoff)
@@ -110,13 +110,55 @@ clust.run_clue()
 clust.cluster_plotter()
 
 
-print(clust.n_clusters)
-print(clust.coords)
+
+# print(clust.n_clusters)
+# print(clust.coords)
+# print(len(clust.is_seed))
+# print(clust.clusters)
+print("Number of outliers: ", len(clust.cluster_points[-1]))
+
+noise_list = []
+for cluster in clust.cluster_points:
+    if len(cluster) < 20 or clust.cluster_ids[cluster[0]] == -1:
+        for point in cluster:
+            noise_list.append(cutoff.iloc[point]["x0"])
+
+plt.hist(noise_list, log=False, bins=200)
+plt.show()
 
 
 
+# for point in clust.cluster_points[1]:
+#     print(cutoff.iloc[point]["x0"])
+# print(clust.cluster_points[1])
 
+# === print seed histogram ===
+# outlier_list = []
+# k = 0
+# for row, target in zip(cutoff.iterrows(), clust.is_seed):
+#     if target == 1:
+#         outlier_list.append(row[1]["x0"])
+# print(len(outlier_list))
+# plt.hist(outlier_list, log=False, bins=200)
+# plt.show()
 
+# print(outlier_or_seed[0])
+# print(max(df['x0']))
+
+# print( and cutoff.outlier_or_seed == 1])
+# temp = cutoff[cutoff["x0"] == 1]
+# print(len(temp[temp.outlier_or_seed == 1]))
+
+# === append to dataframe whether point is a (outlier, seed) or not ===
+# cutoff = cutoff.assign(outlier_or_seed = clust.is_seed)
+# outliers_over_x_axis = []
+# for i in range(0, int(max(df['x0']))):
+#     temp = cutoff[cutoff["x0"] == i]
+#     outliers_over_x_axis.append(len(temp[temp.outlier_or_seed == 1]))
+# print(len(outliers_over_x_axis))
+
+# plt.scatter(range(0, int(max(df['x0']))), outliers_over_x_axis)
+# plt.show()
 
 # cutoff = derivative(sorted_df)
 
@@ -129,18 +171,4 @@ print(clust.coords)
 # plt.scatter(cutoff['x0'],cutoff["x1"], s=1, c=cutoff["weight"], cmap='gist_rainbow', marker='*')
 # plt.scatter(cutoff['X'],cutoff["Y"], s=0.001)
 # plt.colorbar()
-# plt.show()
-
-# === for image (NOT plot) with noise percentage removed ===
-
-# vminVal = 0.95*np.median(data)      # may need to adjust
-# vmaxVal = 1.1*np.median(data)
-# cmapVal = 'gray'
-
-# threshold_intensity = 1892
-# cutoff = data.copy()
-# cutoff[cutoff<threshold_intensity] = 0
-
-# #plt.imshow(data, vmin=vminVal, vmax=vmaxVal, cmap=cmapVal, origin='upper')
-# plt.imshow(cutoff, vmin=vminVal, vmax=vmaxVal, cmap=cmapVal, origin='upper')
 # plt.show()
