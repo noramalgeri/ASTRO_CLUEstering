@@ -10,6 +10,6 @@ def OpenFits(file, BoW=0):
     cmapVal = 'gray'                 # white stars on black background
     if BoW == 0:
         cmapVal = 'Greys'            # black stars on white background
-    plt.imshow(d, vmin=vminVal, vmax=vmaxVal, cmap=cmapVal, origin='upper')
-    plt.show()
+    # plt.imshow(d, vmin=vminVal, vmax=vmaxVal, cmap=cmapVal, origin='upper')
+    # plt.show()
     return d
